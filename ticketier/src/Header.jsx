@@ -114,7 +114,7 @@ export default function Header() {
                 variants={navItemVariants}
               >
                 <a
-                  id={`nav-${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  
                   href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
                   className="hover:text-[#1E90FF] transition duration-300"
                   onClick={() => setIsMenuOpen(false)}
