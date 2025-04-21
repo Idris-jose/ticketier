@@ -115,7 +115,7 @@ export default function Header() {
               >
                 <a
                   
-                  href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  href={`#nav-${item.toLowerCase().replace(/\s+/g, '-')}`}
                   className="hover:text-[#1E90FF] transition duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >
