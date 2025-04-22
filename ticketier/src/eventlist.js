@@ -1,0 +1,315 @@
+const events = [
+    {
+      id: "evt001",
+      name: "Summer Jazz Festival",
+      date: "2025-06-15",
+      time: "18:00",
+      location: "Central Park, New York, NY",
+      category: "Music",
+      description: "An evening of soulful jazz performances by renowned artists under the stars.",
+      ticketTypes: [
+        { type: "General Admission", price: 50, available: 200 },
+        { type: "VIP", price: 120, available: 50 }
+      ],
+      venueMap: "https://example.com/central-park-map",
+      image: "https://example.com/jazz-festival.jpg",
+      keywords: ["jazz", "music", "festival", "outdoor"]
+    },
+    {
+      id: "evt002",
+      name: "Broadway Musical: The Phantom Returns",
+      date: "2025-07-10",
+      time: "19:30",
+      location: "Majestic Theatre, New York, NY",
+      category: "Theater",
+      description: "A captivating revival of the classic musical with stunning visuals and performances.",
+      ticketTypes: [
+        { type: "Orchestra", price: 150, available: 100 },
+        { type: "Mezzanine", price: 90, available: 80 }
+      ],
+      venueMap: "https://example.com/majestic-theatre-map",
+      image: "https://example.com/phantom-musical.jpg",
+      keywords: ["musical", "theater", "broadway", "phantom"]
+    },
+    {
+      id: "evt003",
+      name: "NBA Game: Knicks vs. Lakers",
+      date: "2025-08-22",
+      time: "20:00",
+      location: "Madison Square Garden, New York, NY",
+      category: "Sports",
+      description: "An electrifying basketball showdown between two iconic teams.",
+      ticketTypes: [
+        { type: "Courtside", price: 300, available: 20 },
+        { type: "Upper Level", price: 60, available: 200 }
+      ],
+      venueMap: "https://example.com/msg-map",
+      image: "https://example.com/nba-game.jpg",
+      keywords: ["basketball", "nba", "sports", "knicks", "lakers"]
+    },
+    {
+      id: "evt004",
+      name: "Food & Wine Expo",
+      date: "2025-09-05",
+      time: "12:00",
+      location: "Jacob Javits Center, New York, NY",
+      category: "Festival",
+      description: "Taste exquisite dishes and wines from top chefs and vineyards.",
+      ticketTypes: [
+        { type: "General Admission", price: 75, available: 300 },
+        { type: "VIP Tasting", price: 150, available: 50 }
+      ],
+      venueMap: "https://example.com/javits-center-map",
+      image: "https://example.com/food-wine-expo.jpg",
+      keywords: ["food", "wine", "festival", "culinary"]
+    },
+    {
+      id: "evt005",
+      name: "Rock Legends Concert",
+      date: "2025-06-20",
+      time: "19:00",
+      location: "Barclays Center, Brooklyn, NY",
+      category: "Music",
+      description: "A high-energy concert featuring classic rock bands.",
+      ticketTypes: [
+        { type: "Floor Standing", price: 80, available: 150 },
+        { type: "Seated", price: 60, available: 100 }
+      ],
+      venueMap: "https://example.com/barclays-map",
+      image: "https://example.com/rock-concert.jpg",
+      keywords: ["rock", "concert", "music", "live"]
+    },
+    {
+      id: "evt006",
+      name: "Comedy Night with Sarah Jones",
+      date: "2025-07-15",
+      time: "20:00",
+      location: "Comedy Cellar, New York, NY",
+      category: "Comedy",
+      description: "Laugh out loud with Sarah Jones and special guest comedians.",
+      ticketTypes: [
+        { type: "General Admission", price: 30, available: 80 }
+      ],
+      venueMap: "https://example.com/comedy-cellar-map",
+      image: "https://example.com/comedy-night.jpg",
+      keywords: ["comedy", "standup", "sarah jones"]
+    },
+    {
+      id: "evt007",
+      name: "Art Exhibition: Modern Masters",
+      date: "2025-08-01",
+      time: "10:00",
+      location: "Metropolitan Museum of Art, New York, NY",
+      category: "Art",
+      description: "Explore works by contemporary artists in a stunning exhibit.",
+      ticketTypes: [
+        { type: "Adult", price: 25, available: 500 },
+        { type: "Student", price: 15, available: 200 }
+      ],
+      venueMap: "https://example.com/met-map",
+      image: "https://example.com/art-exhibition.jpg",
+      keywords: ["art", "exhibition", "museum", "modern"]
+    },
+    {
+      id: "evt008",
+      name: "Electronic Dance Music Night",
+      date: "2025-09-12",
+      time: "22:00",
+      location: "Output Club, Brooklyn, NY",
+      category: "Music",
+      description: "Dance the night away with top EDM DJs and vibrant visuals.",
+      ticketTypes: [
+        { type: "General Admission", price: 40, available: 200 },
+        { type: "VIP", price: 100, available: 30 }
+      ],
+      venueMap: "https://example.com/output-club-map",
+      image: "https://example.com/edm-night.jpg",
+      keywords: ["edm", "dance", "music", "club"]
+    },
+    {
+      id: "evt009",
+      name: "Shakespeare in the Park",
+      date: "2025-07-25",
+      time: "19:00",
+      location: "Delacorte Theater, New York, NY",
+      category: "Theater",
+      description: "Enjoy a free performance of 'Romeo and Juliet' in Central Park.",
+      ticketTypes: [
+        { type: "Free Admission", price: 0, available: 1000 }
+      ],
+      venueMap: "https://example.com/delacorte-map",
+      image: "https://example.com/shakespeare-park.jpg",
+      keywords: ["theater", "shakespeare", "free", "outdoor"]
+    },
+    {
+      id: "evt010",
+      name: "Marathon Expo",
+      date: "2025-11-01",
+      time: "09:00",
+      location: "Pier 36, New York, NY",
+      category: "Sports",
+      description: "Gear up for the NYC Marathon with vendors, talks, and more.",
+      ticketTypes: [
+        { type: "General Admission", price: 20, available: 400 }
+      ],
+      venueMap: "https://example.com/pier-36-map",
+      image: "https://example.com/marathon-expo.jpg",
+      keywords: ["marathon", "sports", "expo", "running"]
+    },
+    {
+      id: "evt011",
+      name: "Indie Film Screening",
+      date: "2025-06-25",
+      time: "18:30",
+      location: "IFC Center, New York, NY",
+      category: "Film",
+      description: "Watch award-winning indie films followed by a Q&A with directors.",
+      ticketTypes: [
+        { type: "General Admission", price: 15, available: 120 }
+      ],
+      venueMap: "https://example.com/ifc-center-map",
+      image: "https://example.com/indie-film.jpg",
+      keywords: ["film", "indie", "screening", "cinema"]
+    },
+    {
+      id: "evt012",
+      name: "Craft Beer Festival",
+      date: "2025-08-15",
+      time: "14:00",
+      location: "Governors Island, New York, NY",
+      category: "Festival",
+      description: "Sample craft beers from local breweries with live music.",
+      ticketTypes: [
+        { type: "General Admission", price: 60, available: 300 },
+        { type: "VIP", price: 120, available: 50 }
+      ],
+      venueMap: "https://example.com/governors-island-map",
+      image: "https://example.com/beer-festival.jpg",
+      keywords: ["beer", "festival", "craft", "outdoor"]
+    },
+    {
+      id: "evt013",
+      name: "Classical Music Evening",
+      date: "2025-07-05",
+      time: "19:00",
+      location: "Carnegie Hall, New York, NY",
+      category: "Music",
+      description: "Experience a symphony orchestra performing Beethoven and Mozart.",
+      ticketTypes: [
+        { type: "Balcony", price: 50, available: 150 },
+        { type: "Orchestra", price: 100, available: 80 }
+      ],
+      venueMap: "https://example.com/carnegie-hall-map",
+      image: "https://example.com/classical-music.jpg",
+      keywords: ["classical", "music", "orchestra", "symphony"]
+    },
+    {
+      id: "evt014",
+      name: "Tech Startup Conference",
+      date: "2025-10-10",
+      time: "09:00",
+      location: "Brooklyn Expo Center, Brooklyn, NY",
+      category: "Conference",
+      description: "Network with innovators and hear from industry leaders.",
+      ticketTypes: [
+        { type: "General Admission", price: 200, available: 500 },
+        { type: "VIP", price: 400, available: 50 }
+      ],
+      venueMap: "https://example.com/brooklyn-expo-map",
+      image: "https://example.com/tech-conference.jpg",
+      keywords: ["tech", "conference", "startup", "networking"]
+    },
+    {
+      id: "evt015",
+      name: "Yoga in the Park",
+      date: "2025-06-30",
+      time: "08:00",
+      location: "Bryant Park, New York, NY",
+      category: "Wellness",
+      description: "Join a free morning yoga session open to all levels.",
+      ticketTypes: [
+        { type: "Free Admission", price: 0, available: 200 }
+      ],
+      venueMap: "https://example.com/bryant-park-map",
+      image: "https://example.com/yoga-park.jpg",
+      keywords: ["yoga", "wellness", "free", "outdoor"]
+    },
+    {
+      id: "evt016",
+      name: "Hip-Hop Dance Battle",
+      date: "2025-09-20",
+      time: "19:00",
+      location: "Apollo Theater, New York, NY",
+      category: "Dance",
+      description: "Watch top dancers compete in an epic hip-hop showdown.",
+      ticketTypes: [
+        { type: "General Admission", price: 45, available: 150 }
+      ],
+      venueMap: "https://example.com/apollo-theater-map",
+      image: "https://example.com/hip-hop-dance.jpg",
+      keywords: ["dance", "hip-hop", "battle", "performance"]
+    },
+    {
+      id: "evt017",
+      name: "Photography Workshop",
+      date: "2025-08-10",
+      time: "10:00",
+      location: "Chelsea Market, New York, NY",
+      category: "Workshop",
+      description: "Learn photography techniques from a professional in a hands-on session.",
+      ticketTypes: [
+        { type: "General Admission", price: 80, available: 30 }
+      ],
+      venueMap: "https://example.com/chelsea-market-map",
+      image: "https://example.com/photography-workshop.jpg",
+      keywords: ["photography", "workshop", "art", "learning"]
+    },
+    {
+      id: "evt018",
+      name: "Latin Music Fiesta",
+      date: "2025-07-20",
+      time: "18:00",
+      location: "Flushing Meadows, Queens, NY",
+      category: "Music",
+      description: "Celebrate Latin culture with live salsa and reggaeton performances.",
+      ticketTypes: [
+        { type: "General Admission", price: 55, available: 400 },
+        { type: "VIP", price: 110, available: 50 }
+      ],
+      venueMap: "https://example.com/flushing-meadows-map",
+      image: "https://example.com/latin-fiesta.jpg",
+      keywords: ["latin", "music", "salsa", "festival"]
+    },
+    {
+      id: "evt019",
+      name: "Book Reading with Author Jane Doe",
+      date: "2025-06-28",
+      time: "17:00",
+      location: "Strand Bookstore, New York, NY",
+      category: "Literature",
+      description: "Hear Jane Doe read from her latest novel, followed by a signing.",
+      ticketTypes: [
+        { type: "General Admission", price: 20, available: 100 }
+      ],
+      venueMap: "https://example.com/strand-bookstore-map",
+      image: "https://example.com/book-reading.jpg",
+      keywords: ["book", "reading", "literature", "author"]
+    },
+    {
+      id: "evt020",
+      name: "Vintage Car Show",
+      date: "2025-09-25",
+      time: "11:00",
+      location: "Brooklyn Navy Yard, Brooklyn, NY",
+      category: "Exhibition",
+      description: "Admire classic cars and meet collectors at this annual show.",
+      ticketTypes: [
+        { type: "General Admission", price: 30, available: 300 }
+      ],
+      venueMap: "https://example.com/navy-yard-map",
+      image: "https://example.com/car-show.jpg",
+      keywords: ["car", "vintage", "exhibition", "auto"]
+    }
+  ];
+
+  export default events;
