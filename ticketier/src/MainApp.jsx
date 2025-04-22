@@ -92,97 +92,133 @@ export default function MainApp() {
 
   return (
     <div>
+      <MainAppNav />
 
-<MainAppNav />
-   
-    <section className="bg-[#F8FAFC] min-h-screen flex flex-col items-center text-center space-y-6 px-4 py-8">
-      
-      <motion.h1
-        className="text-5xl md:text-7xl text-[#2D3436] font-extrabold"
-        variants={variants}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.1 }}
-      >
-        Welcome to <span className="text-[#00FF7F]">Ticketier</span>
-      </motion.h1>
-      <div className="relative w-full max-w-lg mx-auto">
-        <label htmlFor="search" className="sr-only">
-          Search for an event
-        </label>
-        <input
-          id="search"
-          type="text"
-          placeholder="Search for an event..."
-          className="w-full text-[#2D3436] bg-white rounded-full p-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] placeholder-gray-400 shadow-md"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          aria-label="Search for an event"
-        />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          aria-hidden="true"
+      <section className="bg-[#F8FAFC] min-h-screen flex flex-col items-center text-center space-y-6 px-4 py-8">
+        <motion.h1
+          className="text-5xl md:text-7xl text-[#2D3436] font-extrabold"
+          variants={variants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M21 21l-4.35-4.35M16.65 10.65a6 6 0 11-12 0 6 6 0 0112 0z"
+          Welcome to <span className="text-[#00FF7F]">Ticketier</span>
+        </motion.h1>
+        <div className="relative w-full max-w-lg mx-auto">
+          <label htmlFor="search" className="sr-only">
+            Search for an event
+          </label>
+          <input
+            id="search"
+            type="text"
+            placeholder="Search for an event..."
+            className="w-full text-[#2D3436] bg-white rounded-full p-3 pl-10 focus:outline-none focus:ring-2 focus:ring-[#1E90FF] placeholder-gray-400 shadow-md"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search for an event"
           />
-        </svg>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto" ref={ref}>
-        {filteredEvents.length > 0 ? (
-          filteredEvents.map((event, index) => (
-            <motion.div
-              key={event.id}
-              className="bg-white rounded-lg shadow-lg p-4"
-              variants={variants}
-              initial="hidden"
-              animate={isInView ? "visible" : "hidden"}
-              transition={{ delay: 0.1 * index }}
-            >
-              <img
-                src={event.image || "https://via.placeholder.com/300x200"}
-                alt={event.name}
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-bold text-[#2D3436]">{event.name}</h2>
-                <p className="text-gray-600">{event.date} | {event.time}</p>
-                <p className="text-gray-600">{event.location}</p>
-                <p className="text-[#1E90FF] font-semibold mt-2">
-                  {event.ticketTypes[0]?.price
-                    ? `From $${event.ticketTypes[0].price}`
-                    : "Free"}
-                </p>
-                <button
-                  className="mt-4 w-full bg-[#1E90FF] text-white rounded-full py-2 hover:bg-[#FF6B6B] transition-colors"
-                  onClick={() => setSelectedEvent(event)}
-                  aria-label={`View details for ${event.name}`}
-                >
-                  View Details
-                </button>
-              </div>
-            </motion.div>
-          ))
-        ) : (
-          <p className="text-[#2D3436] col-span-full text-2xl font-semibold">
-            No events found.
-          </p>
-        )}
-      </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-4.35-4.35M16.65 10.65a6 6 0 11-12 0 6 6 0 0112 0z"
+            />
+          </svg>
+        </div>
 
-      <AnimatePresence>
-        {selectedEvent && (
-          <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
-        )}
-      </AnimatePresence>
-    </section>
+        <div>
+          {filteredEvents.length > 0 ? (
+            <p className="text-[#2D3436] text-lg font-light">
+              Found {filteredEvents.length} event
+              {filteredEvents.length > 1 ? "s" : ""}
+            </p>
+          ) : (
+            <p className="text-[#2D3436] text-lg font-light">No events found.</p>
+          )}
+
+          <div className="flex flex-wrap justify-center gap-2 mt-4">
+            {Array.from(new Set(events.map((event) => event.category))).map(
+              (category) => (
+                <button
+                  key={category}
+                  className="px-4 py-2 bg-[#1E90FF] text-white rounded-full hover:bg-[#00FF7F] transition-colors"
+                  onClick={() =>
+                    setSearchTerm(category.toLowerCase())
+                  }
+                >
+                  {category}
+                </button>
+              )
+            )}
+          </div>
+        </div>
+
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto"
+          ref={ref}
+        >
+          {filteredEvents.length > 0 ? (
+            filteredEvents.map((event, index) => (
+              <motion.div
+                key={event.id}
+                className="bg-white rounded-lg shadow-lg p-4"
+                variants={variants}
+                initial="hidden"
+                animate={isInView ? "visible" : "hidden"}
+                transition={{ delay: 0.1 * index }}
+              >
+                <img
+                  src={event.image || "https://via.placeholder.com/300x200"}
+                  alt={event.name}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <div className="p-4">
+                  <h2 className="text-xl font-bold text-[#2D3436]">
+                    {event.name}
+                  </h2>
+                  <p className="text-gray-600">
+                    {event.date} | {event.time}
+                  </p>
+                  <p className="text-gray-600">{event.location}</p>
+                  <p className="text-[#1E90FF] font-semibold mt-2">
+                    {event.ticketTypes[0]?.price
+                      ? `From $${event.ticketTypes[0].price}`
+                      : "Free"}
+                  </p>
+                  <button
+                    className="mt-4 w-full bg-[#1E90FF] text-white rounded-full py-2 hover:bg-[#FF6B6B] transition-colors"
+                    onClick={() => setSelectedEvent(event)}
+                    aria-label={`View details for ${event.name}`}
+                  >
+                    View Details
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <p className="text-[#2D3436] col-span-full text-2xl font-semibold">
+              No events found.
+            </p>
+          )}
+        </div>
+
+        <AnimatePresence>
+          {selectedEvent && (
+            <EventModal
+              event={selectedEvent}
+              onClose={() => setSelectedEvent(null)}
+            />
+          )}
+        </AnimatePresence>
+      </section>
     </div>
   );
 }
