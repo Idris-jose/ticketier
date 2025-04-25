@@ -1,14 +1,42 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTickets } from "./ticketcontext.jsx";
+import html2canvas from 'html2canvas';
 
 export default function Tickets() {
   const { bookedTickets } = useTickets();
   const navigate = useNavigate();
-  function HandledownloadTicket() {
-    alert("Ticket Downloaded Successfully!");
-    
-  }
+  const HandledownloadTicket = async () => {
+    if (!ticketRef.current) {
+      alert('Error: Ticket element not found!');
+      return;
+    }
+
+    try {
+      // Capture the div as a canvas using html2canvas
+      const canvas = await html2canvas(ticketRef.current, {
+        scale: 2, // Increase resolution for better quality
+        useCORS: true, // Allow cross-origin images if needed
+      });
+
+      // Convert canvas to a data URL (PNG format)
+      const imageData = canvas.toDataURL('image/png');
+
+      // Create a temporary link element for download
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'ticket.png'; // File name for the download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Show success message
+      alert('Ticket Downloaded Successfully!');
+    } catch (error) {
+      console.error('Error downloading ticket:', error);
+      alert('Failed to download ticket. Please try again.');
+    }
+  };
 
   return (
     <motion.section
