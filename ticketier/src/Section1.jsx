@@ -27,7 +27,7 @@ export default function Section1() {
                 Welcome to <span className="text-[#00FF7F]">Ticketier</span>
             </motion.h1>
             <motion.h3
-                className="text-xl font-medium"
+                className="text-xl"
                 variants={variants}
                 transition={{ delay: 0.2 }}
             >

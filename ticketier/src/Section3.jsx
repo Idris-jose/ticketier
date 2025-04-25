@@ -70,7 +70,7 @@ export default function Section3() {
                     How to Book a Ticket on <span className="text-[#00FF7F]">Ticketier</span>
                 </motion.h1>
                 <motion.p
-                    className="mb-8 max-w-2xl text-gray-600"
+                    className="mb-8 min-w-2xs text-gray-600"
                     variants={itemVariants}
                 >
                     Booking your event tickets has never been this fun and effortless! Follow these steps and get ready for an unforgettable experience:

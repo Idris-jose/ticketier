@@ -1,12 +1,37 @@
-import MainAppNav from "./navbar.jsx";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
+import MainAppNav from "./navbar.jsx";
 import events from "./eventlist.js";
+
+// Map event categories to open-source image URLs
+const getEventImage = (event) => {
+  return event.image; // All events have valid images
+};
 
 const EventModal = ({ event, onClose }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Escape") onClose();
   };
+
+  const [selected, setSelected] = useState("");
+  const [quantity, setQuantity] = useState(1);
+
+  // Handle ticket type dropdown change
+  const handleChange = (e) => {
+    setSelected(e.target.value);
+    setQuantity(1); // Reset quantity when type changes
+  };
+
+  // Handle quantity input change
+  const handleQuantityChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value)) {
+      setQuantity(value);
+    }
+  };
+
+  // Find the selected ticket type object
+  const selectedTicket = event.ticketTypes?.find((t) => t.type === selected);
 
   return (
     <motion.div
@@ -29,8 +54,8 @@ const EventModal = ({ event, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          src={event.image || "https://via.placeholder.com/300x200"}
-          alt={`Image for ${event.name}`}
+          src={getEventImage(event)}
+          alt={`${event.name} ${event.category} event`}
           className="w-full h-64 object-cover rounded-lg mb-4"
         />
         <h2 className="text-2xl font-bold text-[#2D3436]">{event.name}</h2>
@@ -38,11 +63,47 @@ const EventModal = ({ event, onClose }) => {
           {event.date} | {event.time} | {event.location}
         </p>
         <p className="text-gray-700">{event.description}</p>
-        <p className="text-[#1E90FF] font-semibold mt-2">
-          {event.ticketTypes[0]?.price
-            ? `From $${event.ticketTypes[0].price}`
-            : "Free"}
-        </p>
+
+        {/* Ticket Type Dropdown */}
+        <p className="text-gray-600 mt-4 text-left">Choose ticket type:</p>
+        <select
+          value={selected}
+          onChange={handleChange}
+          className="w-full p-2 mt-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+          aria-label="Select ticket type"
+        >
+          <option value="">Select a ticket type</option>
+          {event.ticketTypes?.map((ticket) => (
+            <option key={ticket.type} value={ticket.type}>
+              {ticket.type} (${ticket.price})
+            </option>
+          ))}
+        </select>
+
+        {/* Ticket Quantity Input */}
+        {selected && (
+          <>
+            <p className="text-gray-600 mt-4 text-left">Choose ticket amount:</p>
+            <input
+              type="number"
+              min="1"
+              max={selectedTicket?.available || 1}
+              value={quantity}
+              onChange={handleQuantityChange}
+              className="w-full p-2 mt-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1E90FF]"
+              aria-label="Select ticket amount"
+            />
+          </>
+        )}
+
+        {/* Selection Feedback */}
+        {selected && (
+          <p className="text-[#1E90FF] font-semibold mt-2">
+            Selected: {quantity} x {selected} (
+            ${selectedTicket?.price * quantity || 0})
+          </p>
+        )}
+
         <div className="mt-4 flex gap-4">
           <button
             onClick={onClose}
@@ -52,8 +113,15 @@ const EventModal = ({ event, onClose }) => {
             Close
           </button>
           <button
-            onClick={() => alert("Proceed to ticket booking")} // Replace with routing to booking page
-            className="px-4 py-2 bg-[#1E90FF] text-white rounded-lg hover:bg-[#00FF7F] transition-colors"
+            onClick={() =>
+              alert(`Booking ${quantity} ${selected} tickets for ${event.name}`)
+            }
+            disabled={!selected || quantity < 1}
+            className={`px-4 py-2 rounded-lg text-white transition-colors ${
+              selected && quantity >= 1
+                ? "bg-[#1E90FF] hover:bg-[#00FF7F]"
+                : "bg-gray-400 cursor-not-allowed"
+            }`}
             aria-label={`Book tickets for ${event.name}`}
           >
             Book Tickets
@@ -86,9 +154,11 @@ export default function MainApp() {
       )
   );
 
-  console.log("Events:", events);
-  console.log("Filtered Events:", filteredEvents);
-  console.log("Selected Event:", selectedEvent);
+  // Get unique categories
+  const categories = Array.from(new Set(events.map((event) => event.category)));
+
+  // Check if searchTerm is a category
+  const isCategorySelected = searchTerm && categories.map(c => c.toLowerCase()).includes(searchTerm.toLowerCase());
 
   const [darkMode, setDarkMode] = useState(false);
 
@@ -99,16 +169,11 @@ export default function MainApp() {
   return (
     <div className={darkMode ? "dark" : ""}>
       <MainAppNav />
-
-      
-   
-
       <section
         className={`${
           darkMode ? "bg-[#2D3436] text-white" : "bg-[#F8FAFC] text-[#2D3436]"
         } min-h-screen flex flex-col items-center text-center space-y-6 px-4 py-8`}
       >
-        
         <button
           onClick={toggleDarkMode}
           className="px-4 py-2 bg-[#1E90FF] text-white rounded-lg hover:bg-[#00FF7F] transition-colors"
@@ -172,33 +237,36 @@ export default function MainApp() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {filteredEvents.length > 0 ? (
-            <p className="text-lg font-light">
-              Found {filteredEvents.length} event
-              {filteredEvents.length > 1 ? "s" : ""}
-            </p>
-          ) : (
-            <p className="text-lg font-light">No events found.</p>
+          {/* Show event count only when a category is selected */}
+          {isCategorySelected && (
+            <>
+              {filteredEvents.length > 0 ? (
+                <p className="text-lg font-light">
+                  Found {filteredEvents.length} event
+                  {filteredEvents.length > 1 ? "s" : ""}
+                </p>
+              ) : (
+                <p className="text-lg font-light">No events found.</p>
+              )}
+            </>
           )}
 
           <div className="flex flex-wrap justify-center gap-2 mt-4">
-            {Array.from(new Set(events.map((event) => event.category))).map(
-              (category) => (
-                <motion.button
-                  key={category}
-                  className={`px-4 py-2 ${
-                    darkMode
-                      ? "bg-[#00FF7F] text-[#2D3436]"
-                      : "bg-[#1E90FF] text-white"
-                  } rounded-full hover:bg-[#FF6B6B] transition-colors`}
-                  onClick={() => setSearchTerm(category.toLowerCase())}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {category}
-                </motion.button>
-              )
-            )}
+            {categories.map((category) => (
+              <motion.button
+                key={category}
+                className={`px-4 py-2 ${
+                  darkMode
+                    ? "bg-[#00FF7F] text-[#2D3436]"
+                    : "bg-[#1E90FF] text-white"
+                } rounded-full hover:bg-[#FF6B6B] transition-colors`}
+                onClick={() => setSearchTerm(category.toLowerCase())}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                {category}
+              </motion.button>
+            ))}
           </div>
         </motion.div>
 
@@ -223,8 +291,8 @@ export default function MainApp() {
                 whileHover={{ scale: 1.05 }}
               >
                 <img
-                  src={event.image || "https://via.placeholder.com/300x200"}
-                  alt={event.name}
+                  src={getEventImage(event)}
+                  alt={`${event.name} ${event.category} event`}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
                 <div className="p-4">
