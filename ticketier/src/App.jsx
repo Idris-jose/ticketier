@@ -1,18 +1,20 @@
-import Header from "./Header.jsx"
-import Section1 from "./Section1.jsx"
-import Section2 from "./Section2.jsx"
-import Section3 from "./Section3.jsx"
-import Section4 from "./Section4.jsx"
-import Footer from "./Footer.jsx"
-import SignUp from "./SIgnup.jsx"
-import Login from "./LogIn.jsx"
-import MainApp from "./MainApp.jsx"
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from "./Header.jsx";
+import Section1 from "./Section1.jsx";
+import Section2 from "./Section2.jsx";
+import Section3 from "./Section3.jsx";
+import Section4 from "./Section4.jsx";
+import Footer from "./Footer.jsx";
+import SignUp from "./SIgnup.jsx";
+import Login from "./LogIn.jsx";
+import MainApp from "./MainApp.jsx";
+import Tickets from "./tickets.jsx";
+import { TicketProvider } from "./ticketcontext.jsx";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      <Router>
+    <Router>
+      <TicketProvider>
         <Routes>
           <Route
             path="/"
@@ -38,9 +40,10 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
           <Route path="/mainapp" element={<MainApp />} />
+          <Route path="/mainapp/tickets" element={<Tickets />} />
         </Routes>
-      </Router>
-    </>
+      </TicketProvider>
+    </Router>
   );
 }
 

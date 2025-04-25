@@ -1,14 +1,19 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import MainAppNav from "./navbar.jsx";
 import events from "./eventlist.js";
+import { useTickets } from "./ticketcontext.jsx";
 
 // Map event categories to open-source image URLs
 const getEventImage = (event) => {
   return event.image; // All events have valid images
 };
 
-const EventModal = ({ event, onClose }) => {
+const EventModal = ({ event: { name = '', date = '', time = '', location = '', description = '', ticketTypes = [], image = '' } = {}, onClose }) => {
+  const navigate = useNavigate();
+  const { addTicket } = useTickets();
+
   const handleKeyDown = (e) => {
     if (e.key === "Escape") onClose();
   };
@@ -25,13 +30,28 @@ const EventModal = ({ event, onClose }) => {
   // Handle quantity input change
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value, 10);
-    if (!isNaN(value)) {
+    if (!isNaN(value) && value >= 1) {
       setQuantity(value);
     }
   };
 
   // Find the selected ticket type object
-  const selectedTicket = event.ticketTypes?.find((t) => t.type === selected);
+  const selectedTicket = ticketTypes.find((t) => t.type === selected);
+
+  // Handle booking tickets
+  const handleBookTickets = () => {
+    if (selected && quantity >= 1) {
+      const ticket = {
+        eventName: name,
+        ticketType: selected,
+        quantity,
+        totalPrice: selectedTicket?.price * quantity || 0,
+      };
+      addTicket(ticket);
+      onClose();
+      navigate("/mainapp/tickets");
+    }
+  };
 
   return (
     <motion.div
@@ -44,7 +64,7 @@ const EventModal = ({ event, onClose }) => {
       tabIndex={0}
       role="dialog"
       aria-modal="true"
-      aria-label={`Details for ${event.name}`}
+      aria-label={`Details for ${name}`}
     >
       <motion.div
         initial={{ y: 50, opacity: 0 }}
@@ -54,15 +74,15 @@ const EventModal = ({ event, onClose }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <img
-          src={getEventImage(event)}
-          alt={`${event.name} ${event.category} event`}
+          src={image}
+          alt={`${name} event`}
           className="w-full h-64 object-cover rounded-lg mb-4"
         />
-        <h2 className="text-2xl font-bold text-[#2D3436]">{event.name}</h2>
+        <h2 className="text-2xl font-bold text-[#2D3436]">{name}</h2>
         <p className="text-gray-600 mb-2">
-          {event.date} | {event.time} | {event.location}
+          {date} | {time} | {location}
         </p>
-        <p className="text-gray-700">{event.description}</p>
+        <p className="text-gray-700">{description}</p>
 
         {/* Ticket Type Dropdown */}
         <p className="text-gray-600 mt-4 text-left">Choose ticket type:</p>
@@ -73,7 +93,7 @@ const EventModal = ({ event, onClose }) => {
           aria-label="Select ticket type"
         >
           <option value="">Select a ticket type</option>
-          {event.ticketTypes?.map((ticket) => (
+          {ticketTypes.map((ticket) => (
             <option key={ticket.type} value={ticket.type}>
               {ticket.type} (${ticket.price})
             </option>
@@ -113,16 +133,14 @@ const EventModal = ({ event, onClose }) => {
             Close
           </button>
           <button
-            onClick={() =>
-              alert(`Booking ${quantity} ${selected} tickets for ${event.name}`)
-            }
+            onClick={handleBookTickets}
             disabled={!selected || quantity < 1}
             className={`px-4 py-2 rounded-lg text-white transition-colors ${
               selected && quantity >= 1
                 ? "bg-[#1E90FF] hover:bg-[#00FF7F]"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
-            aria-label={`Book tickets for ${event.name}`}
+            aria-label={`Book tickets for ${name}`}
           >
             Book Tickets
           </button>
@@ -138,6 +156,7 @@ export default function MainApp() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   const variants = {
     hidden: { opacity: 0, y: 50 },
@@ -159,8 +178,6 @@ export default function MainApp() {
 
   // Check if searchTerm is a category
   const isCategorySelected = searchTerm && categories.map(c => c.toLowerCase()).includes(searchTerm.toLowerCase());
-
-  const [darkMode, setDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
@@ -237,7 +254,6 @@ export default function MainApp() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Show event count only when a category is selected */}
           {isCategorySelected && (
             <>
               {filteredEvents.length > 0 ? (
