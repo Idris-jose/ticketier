@@ -5,6 +5,10 @@ import { useTickets } from "./ticketcontext.jsx";
 export default function Tickets() {
   const { bookedTickets } = useTickets();
   const navigate = useNavigate();
+  function HandledownloadTicket() {
+    alert("Ticket Downloaded Successfully!");
+    
+  }
 
   return (
     <motion.section
@@ -39,6 +43,10 @@ export default function Tickets() {
               </div>
               {/* Perforated Edge Effect */}
               <div className="absolute top-0 bottom-0 sm:left-[calc(100%-6rem)] left-0 sm:w-0 w-full h-full border-l-2 border-dashed border-gray-300 sm:border-l-0 sm:border-t-2"></div>
+              <button
+                className="absolute top-2 right-2 bg-[#FF6347] text-white rounded-full p-2 hover:bg-[#FF4500] transition-colors"
+                onClick={HandledownloadTicket}
+              > download ticket</button>
             </motion.div>
           ))}
         </div>
