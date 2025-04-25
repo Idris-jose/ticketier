@@ -43,6 +43,8 @@ const EventModal = ({ event: { name = '', date = '', time = '', location = '', d
     if (selected && quantity >= 1) {
       const ticket = {
         eventName: name,
+        eventDate: date,
+        eventTime: time,
         ticketType: selected,
         quantity,
         totalPrice: selectedTicket?.price * quantity || 0,

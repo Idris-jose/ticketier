@@ -27,6 +27,8 @@ export default function Tickets() {
               {/* Main Ticket Section */}
               <div className="p-6 flex-1">
                 <h2 className="text-xl font-bold text-[#2D3436] mb-2">{ticket.eventName}</h2>
+                <p className="text-gray-600">Date: {ticket.eventDate}</p>
+                <p className="text-gray-600">Time: {ticket.eventTime}</p>
                 <p className="text-gray-600">Ticket Type: {ticket.ticketType}</p>
                 <p className="text-gray-600">Quantity: {ticket.quantity}</p>
                 <p className="text-gray-600 font-semibold">Total: ${ticket.totalPrice}</p>
