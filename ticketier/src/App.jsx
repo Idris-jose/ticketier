@@ -8,12 +8,17 @@ import SignUp from "./SIgnup.jsx";
 import Login from "./LogIn.jsx";
 import MainApp from "./MainApp.jsx";
 import Tickets from "./tickets.jsx";
+import Support from "./support.jsx";
 import { TicketProvider } from "./ticketcontext.jsx";
+import {DarkModeProvider} from "./toogledarkmode.jsx"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <Router>
+      <DarkModeProvider>
+
+      
       <TicketProvider>
         <Routes>
           <Route
@@ -41,8 +46,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/mainapp" element={<MainApp />} />
           <Route path="/mainapp/tickets" element={<Tickets />} />
+          <Route path="/mainapp/support" element={<Support />} />
         </Routes>
       </TicketProvider>
+      </DarkModeProvider>
     </Router>
   );
 }

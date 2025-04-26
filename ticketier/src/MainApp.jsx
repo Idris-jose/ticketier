@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import MainAppNav from "./navbar.jsx";
 import events from "./eventlist.js";
 import { useTickets } from "./ticketcontext.jsx";
+import { useDarkMode } from "./toogledarkmode.jsx"
 
 // Map event categories to open-source image URLs
 const getEventImage = (event) => {
@@ -13,6 +14,8 @@ const getEventImage = (event) => {
 const EventModal = ({ event: { name = '', date = '', time = '', location = '', description = '', ticketTypes = [], image = '' } = {}, onClose }) => {
   const navigate = useNavigate();
   const { addTicket } = useTickets();
+
+
 
   const handleKeyDown = (e) => {
     if (e.key === "Escape") onClose();
@@ -155,10 +158,13 @@ const EventModal = ({ event: { name = '', date = '', time = '', location = '', d
 export default function MainApp() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, margin: "0px 0px -100px 0px" });
+  const { toggleDarkMode } =useDarkMode()
+const { darkMode } =useDarkMode()
+
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+
 
   const variants = {
     hidden: { opacity: 0, y: 50 },
@@ -181,10 +187,7 @@ export default function MainApp() {
   // Check if searchTerm is a category
   const isCategorySelected = searchTerm && categories.map(c => c.toLowerCase()).includes(searchTerm.toLowerCase());
 
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
-
+  
   return (
     <div className={darkMode ? "dark" : ""}>
       <MainAppNav />

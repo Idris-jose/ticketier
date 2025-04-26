@@ -1,13 +1,21 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { supabase } from './client.js';
+import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "./client.js";
 
 export default function MainAppNav() {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  // Navigation items
+  const navItems = [
+    { name: "Profile", path: "/mainapp/profile" },
+    { name: "My Tickets", path: "/mainapp/tickets" },
+    { name: "Events", path: "/mainapp" },
+    { name: "Support", path: "/mainapp/support" },
+  ];
 
   useEffect(() => {
     // Check initial session
@@ -26,11 +34,11 @@ export default function MainAppNav() {
     const handleResize = () => {
       setIsDesktop(window.innerWidth >= 768);
     };
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
       authListener.subscription.unsubscribe();
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -42,12 +50,12 @@ export default function MainAppNav() {
     await supabase.auth.signOut();
     setUser(null);
     setIsMenuOpen(false);
-    navigate('/');
+    navigate("/");
   };
 
   const headerVariants = {
     hidden: { opacity: 0, y: -50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
   };
 
   const navVariants = {
@@ -64,7 +72,6 @@ export default function MainAppNav() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
   };
- 
 
   return (
     <motion.header
@@ -84,44 +91,51 @@ export default function MainAppNav() {
         <motion.button
           className="md:hidden z-50 focus:outline-none"
           onClick={toggleMenu}
-          aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={isMenuOpen}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          ariachargement="true"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
           <div className="w-8 h-8 flex flex-col justify-center gap-2">
             <span
-              className={`bg-white h-1 w-full rounded transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}
+              className={`bg-white h-1 w-full rounded transition-all duration-300 ${
+                isMenuOpen ? "rotate-45 translate-y-2" : ""
+              }`}
             ></span>
             <span
-              className={`bg-white h-1 w-full rounded transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}
+              className={`bg-white h-1 w-full rounded transition-all duration-300 ${
+                isMenuOpen ? "opacity-0" : ""
+              }`}
             ></span>
             <span
-              className={`bg-white h-1 w-full rounded transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}
+              className={`bg-white h-1 w-full rounded transition-all duration-300 ${
+                isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+              }`}
             ></span>
           </div>
         </motion.button>
 
         <motion.nav
-          className={`${isMenuOpen ? 'flex' : 'hidden'} md:flex fixed md:static top-0 right-0 h-full md:h-auto w-3/4 md:w-auto bg-[#2D3436] md:bg-transparent flex-col md:flex-row items-center justify-center md:justify-end gap-6 text-lg transition-all duration-300 z-40 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} md:translate-x-0`}
+          className={`${
+            isMenuOpen ? "flex" : "hidden"
+          } md:flex fixed md:static top-0 right-0 h-full md:h-auto w-3/4 md:w-auto bg-[#2D3436] md:bg-transparent flex-col md:flex-row items-center justify-center md:justify-end gap-6 text-lg transition-all duration-300 z-40 ${
+            isMenuOpen ? "translate-x-0" : "translate-x-full"
+          } md:translate-x-0`}
           variants={navVariants}
           initial="hidden"
-          animate={isDesktop || isMenuOpen ? 'visible' : 'hidden'}
+          animate={isDesktop || isMenuOpen ? "visible" : "hidden"}
         >
           <ul className="flex flex-col md:flex-row gap-6 items-center">
-            {['profile', 'My tickets', 'Events', 'Support'].map((item) => (
-              <motion.li
-                key={item}
-                variants={navItemVariants}
-              >
-                <a
-                  id={`nav-${item.toLowerCase().replace(/\s+/g, '-')}`}
-                  href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+            {navItems.map((item) => (
+              <motion.li key={item.name} variants={navItemVariants}>
+                <Link
+                  id={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
+                  to={item.path}
                   className="hover:text-[#1E90FF] transition duration-300"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item}
-                </a>
+                  {item.name}
+                </Link>
               </motion.li>
             ))}
             {user ? (
@@ -129,7 +143,7 @@ export default function MainAppNav() {
                 <motion.button
                   id="nav-sign-out"
                   className="bg-[#FF6B6B] hover:bg-[#E55A5A] px-4 py-2 rounded-lg font-semibold"
-                  whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)' }}
+                  whileHover={{ scale: 1.05, boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)" }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleSignOut}
                 >
@@ -143,7 +157,7 @@ export default function MainAppNav() {
                     <motion.button
                       id="nav-sign-up"
                       className="bg-[#1E90FF] hover:bg-[#1C86EE] px-4 py-2 rounded-lg font-semibold"
-                      whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)' }}
+                      whileHover={{ scale: 1.05, boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -156,7 +170,7 @@ export default function MainAppNav() {
                     <motion.button
                       id="nav-login"
                       className="bg-[#00FF7F] hover:bg-[#00E670] px-4 py-2 rounded-lg font-semibold"
-                      whileHover={{ scale: 1.05, boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)' }}
+                      whileHover={{ scale: 1.05, boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)" }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -170,5 +184,5 @@ export default function MainAppNav() {
         </motion.nav>
       </div>
     </motion.header>
-    )
+  );
 }
