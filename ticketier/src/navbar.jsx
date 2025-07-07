@@ -19,7 +19,7 @@ export default function MainAppNav() {
 
   useEffect(() => {
     // Check initial session
-    const getSession = async () => {
+    const getSession =  async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
     };

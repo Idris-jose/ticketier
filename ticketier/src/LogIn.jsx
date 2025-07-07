@@ -1,38 +1,30 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from './client.js';
+import { signInWithPopup, createUserWithEmailAndPassword,signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase-config.js'; // Adjust the import path as necessary
 
 const Login = () => {
   const [error, setError] = useState(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    const email = e.target[0].value;
-    const password = e.target[1].value;
-
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      if (data.user) {
-        navigate('/mainapp');
-      }
-    } catch (err) {
-      setError(err.message || 'Invalid credentials.');
-    } finally {
-      setLoading(false);
-    }
-  };
+const signIn = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('User signed in:', userCredential.user.uid);
+  } catch (error) {
+    console.error('Sign in error:', error.message);
+  }
+  if (userCredential.user) {
+    alert('Login successful! Welcome back.');
+    console.log('User signed in:', userCredential.user.uid);
+    navigate('/mainapp');
+  }
+};
 
   const handleGoogleLogin = async () => {
     try {
@@ -99,10 +91,12 @@ const Login = () => {
           </div>
         ) : (
           <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <form onSubmit={handleSubmit}>
+            <form >
               <div className="mb-4">
                 <input
                   type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-[#1E90FF]"
                   required
@@ -112,6 +106,8 @@ const Login = () => {
               <div className="mb-4">
                 <input
                   type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-[#1E90FF]"
                   required
@@ -125,6 +121,7 @@ const Login = () => {
               </div>
               <button
                 type="submit"
+                onClick={() => signIn(email,password)}
                 className="w-full bg-[#1E90FF] text-white font-bold py-3 rounded-md hover:bg-[#1C86EE] transition disabled:opacity-50"
                 disabled={loading}
               >
